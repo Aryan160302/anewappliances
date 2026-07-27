@@ -65,9 +65,9 @@ export function ProductBrowser() {
               type="button"
               onClick={() => selectFilter(option.value)}
               aria-pressed={filter === option.value}
-              className={`tracked-caps border px-4 py-2.5 text-[0.7rem] transition-colors ${
+              className={`tracked-caps border px-5 py-2.5 text-[0.7rem] transition-colors ${
                 filter === option.value
-                  ? "border-gold bg-gold text-white"
+                  ? "gold-fill border-gold"
                   : "border-hairline text-ink-muted hover:border-gold hover:text-gold"
               }`}
             >

@@ -1,40 +1,57 @@
 @import "tailwindcss";
 
-/* Palette lifted from the company business card: a single gold on paper white,
-   separated by hairline rules rather than shadows. */
+/* Royal white and gold, taken from the monogram: a bright white ground, warm
+   ivory for alternating bands, and a single gold that runs from deep bronze to
+   a metallic highlight. Gold carries the emphasis; nothing relies on shadow. */
 :root {
-  --gold: #a9782e;
-  --gold-soft: #c9a227;
-  --ivory: #fbf8f3;
+  /* The monogram's gold is #a9782e, but that only reaches 3.9:1 on white —
+     short of AA for the small tracked caps it's used on. --gold is therefore
+     a shade deeper (5.1:1) and is the default for text and borders, while the
+     lighter tones stay confined to ornament that never sits behind a label. */
+  --gold: #946520;
+  --gold-bright: #d4af37; /* metallic highlight — ornament only */
+  --gold-deep: #6e4c18;
+  --on-gold: #ffffff; /* label colour on a gold fill */
+  --white: #ffffff;
+  --ivory: #fbf8f2; /* warm band between white sections */
   --surface: #ffffff;
-  --ink: #1c1a17;
-  --ink-muted: #6b655c;
-  --hairline: #e6dfd3;
+  --ink: #171310;
+  --ink-muted: #6b6155;
+  --hairline: #ece2ce;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* The card gold is too dark to read on charcoal, so it lifts a few steps. */
-    --gold: #d9a441;
-    --gold-soft: #e5be6a;
-    --ivory: #141311;
-    --surface: #1c1a17;
-    --ink: #f4efe6;
-    --ink-muted: #a79e90;
-    --hairline: #322e28;
+    /* Gold on near-black reads as regal too, but the bronze is far too dark to
+       stay legible, so the whole ramp lifts — which in turn flips gold fills
+       to a dark label. */
+    --gold: #d9b65a;
+    --gold-bright: #f0d27f;
+    --gold-deep: #b8933f;
+    --on-gold: #1a1408;
+    --white: #0e0d0b;
+    --ivory: #131110;
+    --surface: #1a1714;
+    --ink: #f7f2e8;
+    --ink-muted: #a9a08f;
+    --hairline: #332c22;
   }
 }
 
 @theme inline {
   --color-gold: var(--gold);
-  --color-gold-soft: var(--gold-soft);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-deep: var(--gold-deep);
+  --color-on-gold: var(--on-gold);
+  --color-white-page: var(--white);
   --color-ivory: var(--ivory);
   --color-surface: var(--surface);
   --color-ink: var(--ink);
   --color-ink-muted: var(--ink-muted);
   --color-hairline: var(--hairline);
 
-  --font-display: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-caps: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -44,7 +61,7 @@
   }
 
   body {
-    background-color: var(--ivory);
+    background-color: var(--white);
     color: var(--ink);
     font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
@@ -60,9 +77,68 @@
   }
 }
 
+/* The wordmark's wide-tracked caps, reused for eyebrows, nav and buttons. */
 @utility tracked-caps {
-  /* The wordmark's wide-tracked caps, reused for eyebrows and nav. */
   font-family: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.18em;
+}
+
+/* Brushed-metal sweep for gilt edges and rules. Reaches the bright highlight,
+   so nothing legible may sit on top of it. */
+@utility gold-leaf {
+  background-image: linear-gradient(
+    115deg,
+    var(--gold-deep) 0%,
+    var(--gold) 32%,
+    var(--gold-bright) 52%,
+    var(--gold) 70%,
+    var(--gold-deep) 100%
+  );
+}
+
+/* Button fill. Stops short of the highlight so the label keeps at least
+   4.5:1 across the whole sweep, in both colour schemes. */
+@utility gold-fill {
+  background-image: linear-gradient(
+    115deg,
+    var(--gold-deep) 0%,
+    var(--gold) 50%,
+    var(--gold-deep) 100%
+  );
+  color: var(--on-gold);
+}
+
+/* The sweep painted into glyphs. Large display text only — at body sizes the
+   lighter stops would fall below AA. */
+@utility gold-leaf-text {
+  background-image: linear-gradient(
+    115deg,
+    var(--gold-deep) 0%,
+    #a9782e 50%,
+    var(--gold-deep) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Classical double rule: a hairline with a finer companion beneath it. */
+@utility rule-royal {
+  border: 0;
+  height: 3px;
+  background-image: linear-gradient(
+      to right,
+      var(--gold) 0%,
+      var(--gold-bright) 50%,
+      var(--gold) 100%
+    ),
+    linear-gradient(to right, var(--hairline), var(--hairline));
+  background-size:
+    100% 1px,
+    100% 1px;
+  background-position:
+    0 0,
+    0 3px;
+  background-repeat: no-repeat;
 }

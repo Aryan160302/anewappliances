@@ -14,10 +14,11 @@ export default function ProductsPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
       <p className="tracked-caps text-xs text-gold">Catalogue</p>
-      <h1 className="mt-4 font-display text-4xl text-ink sm:text-5xl">
+      <hr className="rule-royal mt-4 w-16" />
+      <h1 className="mt-6 font-display text-5xl font-light text-ink sm:text-6xl">
         All products
       </h1>
-      <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
+      <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-muted">
         {products.length} models across induction cooktops and electric kettles.
         Every specification below is taken from the current factory
         specification sheets.

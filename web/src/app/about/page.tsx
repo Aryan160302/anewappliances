@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Wordmark } from "@/components/wordmark";
-import { company, enquiryLink } from "@/data/company";
+import { company, enquiryLink, whatsappLink } from "@/data/company";
 import { categories, productsByCategory } from "@/data/products";
 
 export const metadata: Metadata = {
@@ -14,7 +14,8 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
       <p className="tracked-caps text-xs text-gold">About</p>
-      <h1 className="mt-4 max-w-3xl font-display text-4xl leading-tight text-ink sm:text-5xl">
+      <hr className="rule-royal mt-4 w-16" />
+      <h1 className="mt-6 max-w-3xl font-display text-5xl leading-tight font-light text-ink sm:text-6xl">
         Kitchen appliances built at the Women Entrepreneurs Park
       </h1>
 
@@ -44,7 +45,7 @@ export default function AboutPage() {
           <div className="grid gap-6 border-t border-hairline pt-8 sm:grid-cols-2">
             {categories.map((category) => (
               <div key={category.slug}>
-                <p className="font-display text-3xl text-gold">
+                <p className="gold-leaf-text font-display text-5xl font-light">
                   {productsByCategory(category.slug).length}
                 </p>
                 <p className="tracked-caps mt-2 text-xs text-ink-muted">
@@ -61,7 +62,8 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <aside className="h-fit border border-hairline bg-surface p-6 sm:p-8">
+        <aside className="relative h-fit border border-hairline bg-ivory p-6 sm:p-8">
+          <span className="gold-leaf absolute inset-x-0 top-0 h-px" />
           <Wordmark size="large" />
 
           <h2 className="tracked-caps mt-8 text-xs text-ink-muted">
@@ -84,10 +86,20 @@ export default function AboutPage() {
             {company.email}
           </a>
           <p className="mt-1 text-sm text-ink-muted">{company.website}</p>
+          <a
+            href={whatsappLink(
+              "Hello Anew Appliances, I'd like to make an enquiry.",
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 block text-sm text-ink-muted transition-colors hover:text-gold"
+          >
+            WhatsApp {company.whatsapp.display}
+          </a>
 
           <a
             href={enquiryLink("Trade enquiry")}
-            className="tracked-caps mt-8 block bg-gold px-6 py-3.5 text-center text-xs text-white transition-colors hover:bg-ink"
+            className="gold-fill tracked-caps mt-8 block px-6 py-4 text-center text-xs transition-opacity hover:opacity-90"
           >
             Send an enquiry
           </a>

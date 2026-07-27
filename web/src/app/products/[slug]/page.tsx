@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { SpecTable } from "@/components/spec-table";
-import { company, enquiryLink } from "@/data/company";
+import { company, enquiryLink, whatsappLink } from "@/data/company";
 import {
   getCategory,
   getProduct,
@@ -89,7 +89,8 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
 
         <div>
           <p className="tracked-caps text-xs text-gold">{product.model}</p>
-          <h1 className="mt-4 font-display text-3xl leading-tight text-ink sm:text-4xl">
+          <hr className="rule-royal mt-4 w-16" />
+          <h1 className="mt-6 font-display text-4xl leading-tight font-light text-ink sm:text-5xl">
             {product.name}
           </h1>
           <p className="mt-5 text-base leading-relaxed text-ink-muted">
@@ -112,25 +113,31 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
 
           <div className="mt-9 flex flex-wrap gap-4">
             <a
-              href={enquiryLink(
-                `Enquiry — ${product.model} (${product.name})`,
+              href={whatsappLink(
+                `Hello Anew Appliances, I'd like to enquire about the ${product.model} (${product.name}).`,
               )}
-              className="tracked-caps bg-gold px-7 py-3.5 text-xs text-white transition-colors hover:bg-ink"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gold-fill tracked-caps px-8 py-4 text-xs transition-opacity hover:opacity-90"
             >
-              Enquire about this model
+              Enquire on WhatsApp
+            </a>
+            <a
+              href={enquiryLink(`Enquiry — ${product.model} (${product.name})`)}
+              className="tracked-caps border border-gold px-8 py-4 text-xs text-gold transition-colors hover:bg-gold hover:text-on-gold"
+            >
+              Email us
             </a>
             <a
               href={company.catalogue}
-              className="tracked-caps border border-hairline px-7 py-3.5 text-xs text-ink transition-colors hover:border-gold hover:text-gold"
+              className="tracked-caps border border-hairline px-8 py-4 text-xs text-ink transition-colors hover:border-gold hover:text-gold"
             >
               Download PDF
             </a>
           </div>
 
           <section className="mt-14">
-            <h2 className="tracked-caps text-xs text-ink-muted">
-              Specifications
-            </h2>
+            <h2 className="tracked-caps text-xs text-gold">Specifications</h2>
             <div className="mt-5">
               <SpecTable specs={product.specs} />
             </div>

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ProductCard } from "@/components/product-card";
-import { company, enquiryLink } from "@/data/company";
+import { company, enquiryLink, whatsappLink } from "@/data/company";
 import { categories, products } from "@/data/products";
 
 // A flagship and a workhorse from each range.
@@ -14,30 +14,31 @@ const featured = featuredSlugs.map(
 export default function HomePage() {
   return (
     <>
-      <section className="border-b border-hairline bg-surface">
+      <section className="border-b border-hairline bg-white-page">
         <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2 lg:items-center lg:py-28">
           <div>
             <p className="tracked-caps text-xs text-gold">
               Manufactured in Karnataka
             </p>
-            <h1 className="mt-5 font-display text-4xl leading-[1.1] text-ink sm:text-5xl lg:text-6xl">
+            <hr className="rule-royal mt-5 w-24" />
+            <h1 className="mt-7 font-display text-5xl leading-[1.05] font-light text-ink sm:text-6xl lg:text-7xl">
               Induction cooktops and electric kettles,
-              <span className="text-gold"> built to last.</span>
+              <span className="gold-leaf-text italic"> built to last.</span>
             </h1>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-ink-muted">
+            <p className="mt-7 max-w-lg text-base leading-relaxed text-ink-muted">
               {company.description}
             </p>
 
             <div className="mt-9 flex flex-wrap gap-4">
               <Link
                 href="/products/"
-                className="tracked-caps bg-gold px-7 py-3.5 text-xs text-white transition-colors hover:bg-ink"
+                className="gold-fill tracked-caps px-8 py-4 text-xs transition-opacity hover:opacity-90"
               >
                 View the catalogue
               </Link>
               <a
                 href={enquiryLink("Product enquiry")}
-                className="tracked-caps border border-hairline px-7 py-3.5 text-xs text-ink transition-colors hover:border-gold hover:text-gold"
+                className="tracked-caps border border-gold px-8 py-4 text-xs text-gold transition-colors hover:bg-gold hover:text-on-gold"
               >
                 Make an enquiry
               </a>
@@ -57,15 +58,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-        <h2 className="tracked-caps text-xs text-ink-muted">Our ranges</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
+      <section className="mx-auto max-w-6xl px-5 py-24 sm:px-8">
+        <h2 className="tracked-caps text-xs text-gold">Our ranges</h2>
+        <hr className="rule-royal mt-4 w-16" />
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
           {categories.map((category) => (
             <Link
               key={category.slug}
               href={`/products/?category=${category.slug}`}
-              className="group flex flex-col border border-hairline bg-surface transition-colors hover:border-gold"
+              className="group relative flex flex-col border border-hairline bg-surface transition-colors hover:border-gold"
             >
+              <span className="gold-leaf absolute inset-x-0 top-0 h-px scale-x-0 transition-transform duration-500 group-hover:scale-x-100" />
               <div className="relative aspect-16/10 bg-white">
                 <Image
                   src={category.cover}
@@ -75,8 +78,8 @@ export default function HomePage() {
                   className="object-contain p-10 transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="border-t border-hairline p-7">
-                <h3 className="font-display text-2xl text-ink">
+              <div className="border-t border-hairline p-8">
+                <h3 className="font-display text-3xl font-light text-ink">
                   {category.name}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink-muted">
@@ -91,12 +94,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-hairline bg-surface">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <section className="border-y border-hairline bg-ivory">
+        <div className="mx-auto max-w-6xl px-5 py-24 sm:px-8">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
-            <h2 className="tracked-caps text-xs text-ink-muted">
-              Selected models
-            </h2>
+            <h2 className="tracked-caps text-xs text-gold">Selected models</h2>
             <Link
               href="/products/"
               className="tracked-caps text-xs text-gold hover:text-ink"
@@ -112,13 +113,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <section className="mx-auto max-w-6xl px-5 py-24 sm:px-8">
         <div className="grid gap-10 md:grid-cols-2 md:gap-16">
           <div>
-            <h2 className="font-display text-3xl text-ink">
+            <h2 className="font-display text-4xl leading-tight font-light text-ink">
               Made at Harohalli, sold across India
             </h2>
-            <p className="mt-5 text-base leading-relaxed text-ink-muted">
+            <hr className="rule-royal mt-6 w-16" />
+            <p className="mt-6 text-base leading-relaxed text-ink-muted">
               Our unit at the Women Entrepreneurs Park in the Harohalli
               Industrial Area builds every cooktop and kettle in this catalogue.
               Kettles ship with an India plug and both BIS and non-BIS power
@@ -133,19 +135,28 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="border border-hairline bg-surface p-8">
-            <h2 className="tracked-caps text-xs text-ink-muted">
-              Trade enquiries
-            </h2>
+          <div className="relative border border-hairline bg-ivory p-8">
+            <span className="gold-leaf absolute inset-x-0 top-0 h-px" />
+            <h2 className="tracked-caps text-xs text-gold">Trade enquiries</h2>
             <p className="mt-4 text-sm leading-relaxed text-ink-muted">
               For dealer pricing, bulk orders or specification sheets, write to
               us and we will come back with the details.
             </p>
             <a
               href={`mailto:${company.email}`}
-              className="mt-5 block font-display text-lg text-gold hover:text-ink"
+              className="mt-5 block font-display text-xl text-gold hover:text-ink"
             >
               {company.email}
+            </a>
+            <a
+              href={whatsappLink(
+                "Hello Anew Appliances, I'd like to make a trade enquiry.",
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 block text-sm text-ink-muted transition-colors hover:text-gold"
+            >
+              WhatsApp {company.whatsapp.display}
             </a>
             <address className="mt-6 border-t border-hairline pt-6 text-sm not-italic leading-relaxed text-ink-muted">
               {company.address.lines.map((line) => (

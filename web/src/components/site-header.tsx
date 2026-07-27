@@ -5,7 +5,7 @@ import { categories } from "@/data/products";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-ivory/85 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-hairline bg-white-page/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:gap-6 sm:px-8">
         <Link href="/" aria-label="Anew Appliances home">
           {/* The full wordmark plus nav needs 409px, so the name drops below sm. */}

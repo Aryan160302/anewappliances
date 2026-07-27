@@ -12,8 +12,11 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/products/${product.slug}/`}
-      className="group flex flex-col border border-hairline bg-surface transition-colors hover:border-gold"
+      className="group relative flex flex-col border border-hairline bg-surface transition-colors hover:border-gold"
     >
+      {/* Gilt edge that lights up on hover. */}
+      <span className="gold-leaf absolute inset-x-0 top-0 h-px scale-x-0 transition-transform duration-500 group-hover:scale-x-100" />
+
       <div className="relative aspect-4/3 overflow-hidden bg-white">
         <Image
           src={cardImage(product.images[0])}
@@ -28,7 +31,7 @@ export function ProductCard({ product }: { product: Product }) {
         <span className="tracked-caps text-[0.7rem] text-gold">
           {product.model}
         </span>
-        <h3 className="font-display text-lg leading-snug text-ink">
+        <h3 className="font-display text-xl leading-snug font-medium text-ink">
           {product.name}
         </h3>
         <p className="mt-auto pt-3 text-sm text-ink-muted">
