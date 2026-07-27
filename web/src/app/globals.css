@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* Palette lifted from the company business card: a single gold on paper white,
+   separated by hairline rules rather than shadows. */
+:root {
+  --gold: #a9782e;
+  --gold-soft: #c9a227;
+  --ivory: #fbf8f3;
+  --surface: #ffffff;
+  --ink: #1c1a17;
+  --ink-muted: #6b655c;
+  --hairline: #e6dfd3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* The card gold is too dark to read on charcoal, so it lifts a few steps. */
+    --gold: #d9a441;
+    --gold-soft: #e5be6a;
+    --ivory: #141311;
+    --surface: #1c1a17;
+    --ink: #f4efe6;
+    --ink-muted: #a79e90;
+    --hairline: #322e28;
+  }
+}
+
+@theme inline {
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-ivory: var(--ivory);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-hairline: var(--hairline);
+
+  --font-display: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--ivory);
+    color: var(--ink);
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  ::selection {
+    background-color: var(--gold);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+}
+
+@utility tracked-caps {
+  /* The wordmark's wide-tracked caps, reused for eyebrows and nav. */
+  font-family: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}

@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# next.js build output
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# vercel
+.vercel
+
+# env files
+.env*
+
+# macOS
+.DS_Store
+
+# Obsidian per-machine state
+.obsidian/workspace.json
+
+# Third-party personal data — these two images show company business cards
+# carrying individual staff mobile numbers and personal email addresses. This
+# repository is public, so they are kept out of it and out of its history.
+# The site publishes only the company address and info@anewappliances.com.
+# Keep them locally; scripts/extract_assets.py uses them when present.
+data/PHOTO-2026-07-20-18-16-52.jpg
+data/logo.png
