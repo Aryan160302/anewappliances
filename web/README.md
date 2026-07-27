@@ -4,6 +4,12 @@ A static catalogue for the Anew Appliances induction cooktop and electric kettle
 ranges. Every product image and specification is derived from the source
 collateral in `../data`, not typed in by hand.
 
+## Deployment
+
+Pushed to `main` on [github.com/Aryan160302/anewappliances](https://github.com/Aryan160302/anewappliances),
+which Vercel builds automatically. The project's Root Directory is `web`, since
+the Next.js app is a subdirectory of the repo.
+
 ## Running it
 
 ```bash
