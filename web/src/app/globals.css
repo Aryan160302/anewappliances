@@ -20,23 +20,10 @@
   --hairline: #ece2ce;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Gold on near-black reads as regal too, but the bronze is far too dark to
-       stay legible, so the whole ramp lifts — which in turn flips gold fills
-       to a dark label. */
-    --gold: #d9b65a;
-    --gold-bright: #f0d27f;
-    --gold-deep: #b8933f;
-    --on-gold: #1a1408;
-    --white: #0e0d0b;
-    --ivory: #131110;
-    --surface: #1a1714;
-    --ink: #f7f2e8;
-    --ink-muted: #a9a08f;
-    --hairline: #332c22;
-  }
-}
+/* Deliberately no dark scheme. The brand is white and gold, and honouring
+   prefers-color-scheme repainted the page near-black for anyone whose device
+   sits in dark mode — the opposite of the intended identity. `color-scheme`
+   below keeps form controls and scrollbars light to match. */
 
 @theme inline {
   --color-gold: var(--gold);
@@ -58,6 +45,9 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Opt every browser into light rendering for native UI — without this the
+       search input and scrollbars stay dark on a dark-mode device. */
+    color-scheme: light;
   }
 
   body {

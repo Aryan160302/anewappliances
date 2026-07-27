@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter, Jost } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
@@ -33,6 +33,13 @@ export const metadata: Metadata = {
     "Anew Appliances",
     "Karnataka",
   ],
+};
+
+// The catalogue is white and gold in every context; it does not follow the
+// device's dark preference.
+export const viewport: Viewport = {
+  colorScheme: "light",
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
