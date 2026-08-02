@@ -1,7 +1,14 @@
 import Link from "next/link";
 
 import { Wordmark } from "@/components/wordmark";
-import { categories } from "@/data/products";
+
+// Three ranges no longer fit across a phone header, so the nav points at the
+// catalogue as a whole and the range filter on /products/ takes over from here.
+const links = [
+  { href: "/products/", label: "Products" },
+  { href: "/machineries/", label: "Machineries" },
+  { href: "/about/", label: "About" },
+];
 
 export function SiteHeader() {
   return (
@@ -12,26 +19,16 @@ export function SiteHeader() {
           <Wordmark markOnlyOnMobile />
         </Link>
 
-        <nav className="flex items-center gap-4 text-[0.65rem] sm:gap-7 sm:text-sm">
-          {categories.map((category) => (
+        <nav className="flex items-center gap-4 text-[0.7rem] sm:gap-7 sm:text-sm">
+          {links.map((link) => (
             <Link
-              key={category.slug}
-              href={`/products/?category=${category.slug}`}
+              key={link.href}
+              href={link.href}
               className="tracked-caps whitespace-nowrap text-ink-muted transition-colors hover:text-gold"
             >
-              {/* "Induction Cooktops" is too wide for a phone header. */}
-              <span className="sm:hidden">
-                {category.name.split(" ").at(-1)}
-              </span>
-              <span className="hidden sm:inline">{category.name}</span>
+              {link.label}
             </Link>
           ))}
-          <Link
-            href="/about/"
-            className="tracked-caps whitespace-nowrap text-ink-muted transition-colors hover:text-gold"
-          >
-            About
-          </Link>
         </nav>
       </div>
     </header>

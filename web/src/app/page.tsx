@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { HeroCarousel } from "@/components/hero-carousel";
 import { ProductCard } from "@/components/product-card";
 import { company, enquiryLink, whatsappLink } from "@/data/company";
 import { categories, products } from "@/data/products";
 
-// A flagship and a workhorse from each range.
-const featuredSlugs = ["m3-5kva", "a8", "ssj1507", "kettle-colour"];
+// A flagship from each range, plus the two newest premium models.
+const featuredSlugs = ["cooktop-plus", "double-hob-foldable", "p41", "ssj1507"];
 const featured = featuredSlugs.map(
   (slug) => products.find((product) => product.slug === slug)!,
 );
@@ -22,7 +23,7 @@ export default function HomePage() {
             </p>
             <hr className="rule-royal mt-5 w-24" />
             <h1 className="mt-7 font-display text-5xl leading-[1.05] font-light text-ink sm:text-6xl lg:text-7xl">
-              Induction cooktops and electric kettles,
+              Induction cooktops, infrared cookers and kettles,
               <span className="gold-leaf-text italic"> built to last.</span>
             </h1>
             <p className="mt-7 max-w-lg text-base leading-relaxed text-ink-muted">
@@ -45,23 +46,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative aspect-4/3 border border-hairline bg-white">
-            <Image
-              src="/products/m3/hero.webp"
-              alt="Anew Appliances M3 induction cooktop"
-              fill
-              sizes="(min-width: 1024px) 560px, 92vw"
-              className="object-contain p-10"
-              priority
-            />
-          </div>
+          <HeroCarousel />
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-24 sm:px-8">
         <h2 className="tracked-caps text-xs text-gold">Our ranges</h2>
         <hr className="rule-royal mt-4 w-16" />
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
           {categories.map((category) => (
             <Link
               key={category.slug}
@@ -122,17 +114,26 @@ export default function HomePage() {
             <hr className="rule-royal mt-6 w-16" />
             <p className="mt-6 text-base leading-relaxed text-ink-muted">
               Our unit at the Women Entrepreneurs Park in the Harohalli
-              Industrial Area builds every cooktop and kettle in this catalogue.
-              Kettles ship with an India plug and both BIS and non-BIS power
-              cords; cooktops run on 230 V, 50 Hz with a 3-pin plug and a 1.15 m
-              cord.
+              Industrial Area builds every appliance in this catalogue. Kettles
+              ship with an India plug and both BIS and non-BIS power cords;
+              cooktops run on 230 V, 50 Hz with a 3-pin plug and a 1.15 m cord,
+              and every model is offered in a 5KVA variant with added surge
+              protection.
             </p>
-            <Link
-              href="/about/"
-              className="tracked-caps mt-7 inline-block text-xs text-gold hover:text-ink"
-            >
-              About the company →
-            </Link>
+            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3">
+              <Link
+                href="/machineries/"
+                className="tracked-caps inline-block text-xs text-gold hover:text-ink"
+              >
+                How we build them →
+              </Link>
+              <Link
+                href="/about/"
+                className="tracked-caps inline-block text-xs text-gold hover:text-ink"
+              >
+                About the company →
+              </Link>
+            </div>
           </div>
 
           <div className="relative border border-hairline bg-ivory p-8">

@@ -18,6 +18,12 @@ export function SiteFooter() {
               </span>
             ))}
           </address>
+          <Link
+            href="/about/#location"
+            className="mt-3 inline-block text-sm text-gold transition-colors hover:text-ink"
+          >
+            View on map →
+          </Link>
         </div>
 
         <div>
@@ -74,6 +80,14 @@ export function SiteFooter() {
               >
                 WhatsApp {company.whatsapp.display}
               </a>
+            </li>
+            <li>
+              <Link
+                href="/machineries/"
+                className="text-ink transition-colors hover:text-gold"
+              >
+                Our machineries
+              </Link>
             </li>
             <li>
               <Link

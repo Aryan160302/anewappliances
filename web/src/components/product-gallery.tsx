@@ -37,7 +37,7 @@ export function ProductGallery({
               className={`relative h-20 w-20 border bg-white transition-colors ${
                 index === active
                   ? "border-gold"
-                  : "border-hairline hover:border-gold-soft"
+                  : "border-hairline hover:border-gold/60"
               }`}
             >
               <Image

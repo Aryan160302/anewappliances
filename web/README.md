@@ -24,12 +24,21 @@ Netlify, S3, or `npx serve out` locally. There is no server and no database.
 
 ## Where the content comes from
 
-| Source in `../data`             | Feeds                                        |
-| ------------------------------- | -------------------------------------------- |
-| `Anew Appliances Catalogue.pdf` | The six induction cooktops (pages 2–7)       |
-| `Water Kettle Catalogue.pptx`   | The six electric kettles (slides 2–8)        |
-| `logo.png` (brand sheet)        | The gold "A" monogram                        |
-| `PHOTO-2026-07-20-18-16-52.jpg` | The company address; fallback logo source    |
+| Source in `../data`                            | Feeds                                                    |
+| ---------------------------------------------- | -------------------------------------------------------- |
+| `Anew Appliances Catalogue.pdf`                | The six catalogue induction cooktops (pages 2–7)         |
+| `Water Kettle Catalogue.pptx`                  | The six electric kettles (slides 2–8)                    |
+| `new data/TDS Of ICT.xlsx`                     | Cooktop component specs; the Machineries page            |
+| `new data/Technical specification for Infrared Cooker …xlsx` | The P41 and A22 infrared cookers           |
+| `new data/ICT Premium Models.xlsx`             | Cooktop Plus, Double Hob, Slim Stove — spec and renders  |
+| `new data/*.jpg\|jpeg\|png`                     | Photographs of the A4, A8, M3, slim and infrared models  |
+| `new data/factory video.mp4`                   | 14 stills of the Harohalli unit on the Machineries page  |
+| `logo.png` (brand sheet)                       | The gold "A" monogram                                    |
+| `PHOTO-2026-07-20-18-16-52.jpg`                | The company address; fallback logo source                |
+
+The costing sheets inside `ICT Premium Models.xlsx` — import price, wastage,
+transport, labour and margin — are internal. Nothing derived from them appears
+on the site or in `src/`.
 
 Only the company address and `info@` mailbox from the business cards are
 published. The individual staff names, mobile numbers and personal emails

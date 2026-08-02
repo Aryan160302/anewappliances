@@ -22,12 +22,13 @@ export const metadata: Metadata = {
   // Resolves relative Open Graph image paths against the deployed origin.
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${company.name} — Induction Cooktops & Electric Kettles`,
+    default: `${company.name} — Induction Cooktops, Infrared Cookers & Electric Kettles`,
     template: `%s — ${company.name}`,
   },
   description: company.description,
   keywords: [
     "induction cooktop",
+    "infrared cooker",
     "electric kettle",
     "stainless steel kettle",
     "Anew Appliances",

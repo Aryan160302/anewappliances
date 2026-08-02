@@ -141,6 +141,26 @@ export default async function ProductPage(props: PageProps<"/products/[slug]">) 
             <div className="mt-5">
               <SpecTable specs={product.specs} />
             </div>
+
+            {/* The component sheet runs to twenty-odd rows and only matters to
+                trade buyers, so it stays folded away by default. */}
+            {product.components && (
+              <details className="group mt-8 border border-hairline">
+                <summary className="tracked-caps flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-xs text-ink transition-colors hover:text-gold">
+                  Component specification
+                  <span
+                    aria-hidden
+                    className="text-gold transition-transform duration-300 group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <div className="border-t border-hairline">
+                  <SpecTable specs={product.components} />
+                </div>
+              </details>
+            )}
+
             <p className="mt-4 text-xs text-ink-muted">
               Technical specifications are subject to change.
             </p>

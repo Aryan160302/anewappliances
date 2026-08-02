@@ -26,3 +26,12 @@ next-env.d.ts
 # Keep them locally; scripts/extract_assets.py uses them when present.
 data/PHOTO-2026-07-20-18-16-52.jpg
 data/logo.png
+
+# Commercially sensitive — this workbook's "Induction Cooktop Plus",
+# "Folderbable Double Hob IC" and "Induction Stove Slim Model" sheets are
+# costings: landed import price per unit, wastage, transport, labour and the
+# margin applied. Only the product descriptions on its first sheet are used by
+# the site, and those are transcribed into src/data/products.ts. This
+# repository is public, so the workbook itself stays out of it.
+# Keep it locally; scripts/extract_assets.py uses it when present.
+data/new data/ICT Premium Models.xlsx

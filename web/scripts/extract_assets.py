@@ -6,6 +6,8 @@ Sources:
                                     (the PDF reuses one photo per model pair)
   Water Kettle Catalogue.pptx    -> ppt/media/* , mapped to models by slide rels
   PHOTO-*.jpg                    -> business cards, cropped for the logo mark
+  new data/*.jpg|jpeg|png        -> photographs of the current models
+  new data/ICT Premium Models.xlsx -> xl/media/*, the premium-model renders
 
 Everything is written as WebP: a 1200px hero and a 600px card variant. Sources
 are never upscaled -- several catalogue photos are only ~535px wide.
@@ -34,6 +36,8 @@ PDF = DATA / "Anew Appliances Catalogue.pdf"
 PPTX = DATA / "Water Kettle Catalogue.pptx"
 CARDS = DATA / "PHOTO-2026-07-20-18-16-52.jpg"
 BRAND_SHEET = DATA / "logo.png"
+NEW_DATA = DATA / "new data"
+PREMIUM_XLSX = NEW_DATA / "ICT Premium Models.xlsx"
 
 HERO_EDGE = 1200
 CARD_EDGE = 600
@@ -65,6 +69,36 @@ KETTLES: dict[str, list[str]] = {
     "ssj1517": ["image16.png"],
 }
 
+# Loose photographs in `data/new data/`, keyed slug -> {asset name: file}.
+# These run after extract_cooktops(), so a "hero" here deliberately lands on
+# top of the ~535px rip pdfimages pulls out of the catalogue PDF.
+NEW_PHOTOS: dict[str, dict[str, str]] = {
+    "a4": {"hero": "IC AA A4.jpg"},
+    "a4-5kva": {"hero": "IC AA A4.jpg"},
+    "m3": {"hero": "IC M3 Model.jpeg"},
+    "m3-5kva": {"hero": "IC M3 Model.jpeg"},
+    # Golden control panel, 8 presets, ceramic plate -- the A8 pair. Kept as a
+    # second view rather than a hero: the filename claims a bigger plate than
+    # the 250x250mm the TDS records for these two models.
+    "a8": {"gallery-1": "Ceramic Bigger Glass.jpeg"},
+    "a8-5kva": {"gallery-1": "Ceramic Bigger Glass.jpeg"},
+    "slim-stove": {"hero": "ICT SP1.jpeg"},
+    "p41": {"hero": "IC SP2.jpeg"},
+    "a22": {"hero": "IR AA1.jpeg"},
+    # Range cover. The spec sheet lists only a plastic (P41) and an aluminium
+    # (A22) body, so this stainless one is attributed to neither model.
+    "infrared": {"hero": "Infrared with SS Body.png"},
+}
+
+# Renders embedded in ICT Premium Models.xlsx. The sheet -> image mapping comes
+# from xl/worksheets/_rels/*.rels -> xl/drawings/_rels/*.rels: the "Induction
+# Cooktop Plus" sheet draws image2 and image1, "Folderbable Double Hob IC"
+# draws image4 (unfolded) and image3 (folded).
+PREMIUM_RENDERS: dict[str, dict[str, str]] = {
+    "cooktop-plus": {"hero": "image2.png", "gallery-1": "image1.png"},
+    "double-hob-foldable": {"hero": "image4.png", "gallery-1": "image3.png"},
+}
+
 # Tight bounding boxes of the "A" monogram, measured by thresholding gold
 # pixels (r > b + 20) in each source. The brand sheet carries a crisp 220px
 # render of the mark, so it wins when present; the business card photo is the
@@ -86,9 +120,23 @@ def flatten(im: Image.Image) -> Image.Image:
     return canvas.convert("RGB")
 
 
+def trim_transparent(im: Image.Image) -> Image.Image:
+    """Crop away a fully transparent margin.
+
+    The premium-model renders are 5000px wide but the appliance occupies only
+    the middle third of the frame, so thumbnailing them whole would leave a
+    postage stamp. The alpha channel gives an exact bound -- nothing here is
+    guessed. Photographs, which carry no alpha, are returned untouched.
+    """
+    if im.mode not in ("RGBA", "LA"):
+        return im
+    box = im.getchannel("A").getbbox()
+    return im.crop(box) if box else im
+
+
 def write_variants(src: Path, dest_dir: Path, name: str) -> None:
     dest_dir.mkdir(parents=True, exist_ok=True)
-    im = flatten(Image.open(src))
+    im = flatten(trim_transparent(Image.open(src)))
     for suffix, edge in ((name, HERO_EDGE), (f"{name}-card", CARD_EDGE)):
         out = im.copy()
         out.thumbnail((edge, edge), Image.LANCZOS)  # never upscales
@@ -130,6 +178,41 @@ def extract_kettles(tmp: Path) -> None:
         print(f"  kettle  {slug:10s} <- {', '.join(images)}")
 
 
+def extract_new_models(tmp: Path) -> None:
+    """Imagery from `data/new data/` -- the premium and infrared models, plus
+    sharper photographs of models the catalogue PDF only carries at ~535px."""
+    for slug, assets in NEW_PHOTOS.items():
+        dest = PUBLIC / "products" / slug
+        for name, filename in assets.items():
+            src = NEW_DATA / filename
+            if not src.exists():
+                sys.exit(f"{filename} missing from {NEW_DATA}")
+            write_variants(src, dest, name)
+        print(f"  photo   {slug:20s} <- {', '.join(assets.values())}")
+
+    # The premium workbook is gitignored -- it carries costings alongside the
+    # renders -- so a fresh clone will not have it. The committed WebPs stand.
+    if not PREMIUM_XLSX.exists():
+        print(f"  render  SKIPPED — {PREMIUM_XLSX.name} not present locally")
+        return
+
+    media = tmp / "premium"
+    media.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(PREMIUM_XLSX) as archive:
+        for member in archive.namelist():
+            if member.startswith("xl/media/"):
+                (media / Path(member).name).write_bytes(archive.read(member))
+
+    for slug, assets in PREMIUM_RENDERS.items():
+        dest = PUBLIC / "products" / slug
+        for name, filename in assets.items():
+            src = media / filename
+            if not src.exists():
+                sys.exit(f"{filename} missing from {PREMIUM_XLSX.name}")
+            write_variants(src, dest, name)
+        print(f"  render  {slug:20s} <- {', '.join(assets.values())}")
+
+
 def extract_logo() -> None:
     """Lift the monogram off its background into a transparent PNG.
 
@@ -161,6 +244,19 @@ def extract_logo() -> None:
     mark = np.zeros((*alpha.shape, 4), dtype="uint8")
     mark[..., 0:3] = BRAND_GOLD
     mark[..., 3] = alpha
+
+    # The crop boxes above are measured against one specific brand sheet and
+    # one specific card photo. Point the script at a different revision of
+    # either and the box lands on empty paper -- which yields a fully
+    # transparent PNG that silently overwrites a good mark. Refuse to write it.
+    inked = int((alpha > 10).sum())
+    if inked < 1000:
+        print(
+            f"  logo    SKIPPED — the crop from {source.name} is blank "
+            f"({inked} inked pixels), so the box no longer matches this "
+            f"source. brand/logo.png and the icons were left as they are."
+        )
+        return
 
     out = Image.fromarray(mark, "RGBA")
     scale = LOGO_TARGET_WIDTH / out.width
@@ -218,6 +314,9 @@ def main() -> None:
         extract_cooktops(tmp)
         print("extracting kettles")
         extract_kettles(tmp)
+        # Last, so the sharper photographs overwrite the catalogue PDF's rips.
+        print("extracting new models")
+        extract_new_models(tmp)
 
     print("extracting brand assets")
     extract_logo()
