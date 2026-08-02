@@ -344,13 +344,7 @@ const cooktops: Product[] = cooktopSources.map((source) => ({
     ...cooktopCommonSpecs,
   ],
   components: cooktopComponents(source),
-  // Only the A8 pair has a second photograph in the new source material.
-  images: source.slug.startsWith("a8")
-    ? [
-        `/products/${source.slug}/hero.webp`,
-        `/products/${source.slug}/gallery-1.webp`,
-      ]
-    : [`/products/${source.slug}/hero.webp`],
+  images: [`/products/${source.slug}/hero.webp`],
 }));
 
 /**

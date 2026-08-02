@@ -12,7 +12,11 @@ Sources:
 Everything is written as WebP: a 1200px hero and a 600px card variant. Sources
 are never upscaled -- several catalogue photos are only ~535px wide.
 
-Requires: poppler (pdfimages) and Pillow. Run from anywhere:
+Several shots were taken on a grey studio sweep rather than on white; the
+assets listed in WHITEN_BACKDROP are swept to white on the way through, so the
+catalogue reads as one set. See whiten_backdrop().
+
+Requires: poppler (pdfimages), Pillow, NumPy and SciPy. Run from anywhere:
     python3 web/scripts/extract_assets.py
 """
 
@@ -77,11 +81,11 @@ NEW_PHOTOS: dict[str, dict[str, str]] = {
     "a4-5kva": {"hero": "IC AA A4.jpg"},
     "m3": {"hero": "IC M3 Model.jpeg"},
     "m3-5kva": {"hero": "IC M3 Model.jpeg"},
-    # Golden control panel, 8 presets, ceramic plate -- the A8 pair. Kept as a
-    # second view rather than a hero: the filename claims a bigger plate than
-    # the 250x250mm the TDS records for these two models.
-    "a8": {"gallery-1": "Ceramic Bigger Glass.jpeg"},
-    "a8-5kva": {"gallery-1": "Ceramic Bigger Glass.jpeg"},
+    # "Ceramic Bigger Glass.jpeg" is deliberately not mapped. It is the one
+    # product shot taken on a wooden table rather than a sweep, so it cannot be
+    # brought onto white with the rest of the catalogue, and its filename
+    # claims a bigger plate than the 250x250mm the TDS records for the A8 pair
+    # it otherwise matches.
     "slim-stove": {"hero": "ICT SP1.jpeg"},
     "p41": {"hero": "IC SP2.jpeg"},
     "a22": {"hero": "IR AA1.jpeg"},
@@ -120,6 +124,77 @@ def flatten(im: Image.Image) -> Image.Image:
     return canvas.convert("RGB")
 
 
+# (slug, asset name) pairs shot on a grey sweep, which whiten_backdrop() lifts
+# to white. Everything absent from this set is left exactly as it came:
+#   cooktop-plus/gallery-1  a deliberately black studio render
+#   kettle-colour/hero      the colour range on a shelf -- the grey kettle is
+#                           too close to the backdrop to survive the fill
+#   products/infrared       a kitchen scene, used as a facility image
+WHITEN_BACKDROP: set[tuple[str, str]] = {
+    ("m3", "hero"),
+    ("m3-5kva", "hero"),
+    ("p41", "hero"),
+    ("a22", "hero"),
+    ("slim-stove", "hero"),
+    ("kettle-base", "hero"),
+    ("ssj1501", "gallery-1"),
+    ("ssj1501", "gallery-2"),
+    ("ssj1517", "hero"),
+}
+
+
+def whiten_backdrop(
+    im: Image.Image,
+    t_in: float = 26.0,
+    t_out: float = 88.0,
+    feather: float = 2.0,
+) -> Image.Image:
+    """Sweep a grey studio backdrop to white without touching the product.
+
+    The backdrop colour is read from the border, then the region reachable from
+    the edge of the frame without crossing anything far from that colour is
+    taken as background. Working from connectivity rather than colour alone is
+    what protects light products: a highlight on brushed steel may match the
+    backdrop, but it sits inside the product's own dark outline, so the fill
+    never reaches it.
+
+    The alpha is the blurred region gated a second time by the colour ramp.
+    Blurring alone leaves a torn frontier where the fill stops in a soft
+    contact shadow; the re-gate keeps that frontier smooth while stopping the
+    blur from spilling a halo onto the product.
+    """
+    import numpy as np
+    from scipy import ndimage
+
+    rgb = np.asarray(im.convert("RGB")).astype(np.float32)
+    height, width, _ = rgb.shape
+    band = max(3, min(height, width) // 120)
+    border = np.concatenate(
+        [
+            rgb[:band].reshape(-1, 3),
+            rgb[-band:].reshape(-1, 3),
+            rgb[:, :band].reshape(-1, 3),
+            rgb[:, -band:].reshape(-1, 3),
+        ]
+    )
+    backdrop = np.median(border, axis=0)
+    distance = np.linalg.norm(rgb - backdrop, axis=2)
+
+    reachable = distance < t_out
+    seed = np.zeros_like(reachable)
+    seed[0] = seed[-1] = True
+    seed[:, 0] = seed[:, -1] = True
+    seed &= reachable
+    region = ndimage.binary_propagation(seed, mask=reachable).astype(np.float32)
+
+    ramp = np.clip((t_out - distance) / (t_out - t_in), 0.0, 1.0)
+    alpha = ndimage.gaussian_filter(region * ramp, feather)
+    alpha = np.clip(alpha * ramp, 0.0, 1.0)[..., None]
+
+    swept = rgb * (1.0 - alpha) + 255.0 * alpha
+    return Image.fromarray(np.clip(swept, 0, 255).astype(np.uint8))
+
+
 def trim_transparent(im: Image.Image) -> Image.Image:
     """Crop away a fully transparent margin.
 
@@ -137,6 +212,8 @@ def trim_transparent(im: Image.Image) -> Image.Image:
 def write_variants(src: Path, dest_dir: Path, name: str) -> None:
     dest_dir.mkdir(parents=True, exist_ok=True)
     im = flatten(trim_transparent(Image.open(src)))
+    if (dest_dir.name, name) in WHITEN_BACKDROP:
+        im = whiten_backdrop(im)
     for suffix, edge in ((name, HERO_EDGE), (f"{name}-card", CARD_EDGE)):
         out = im.copy()
         out.thumbnail((edge, edge), Image.LANCZOS)  # never upscales
